@@ -267,8 +267,12 @@ def main():
         with open(opt.from_file, "r") as f:
             data = f.read().splitlines()
             data = list(chunk(data, batch_size))
-
-    sample_path = os.path.join(outpath, "samples")
+    if opt.from_file:
+        sample_path = os.path.join(outpath, "samples")
+    else :
+        fold_name = prompt.title()
+        fold_name = fold_name.replace(" ","")
+        sample_path = os.path.join(outpath, fold_name)
     os.makedirs(sample_path, exist_ok=True)
     base_count = len(os.listdir(sample_path))
     grid_count = len(os.listdir(outpath)) - 1
