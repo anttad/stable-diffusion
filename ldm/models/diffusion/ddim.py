@@ -8,6 +8,8 @@ from functools import partial
 from ldm.modules.diffusionmodules.util import make_ddim_sampling_parameters, make_ddim_timesteps, noise_like, \
     extract_into_tensor
 
+default_device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+
 
 class DDIMSampler(object):
     def __init__(self, model, schedule="linear", **kwargs):
@@ -18,8 +20,10 @@ class DDIMSampler(object):
 
     def register_buffer(self, name, attr):
         if type(attr) == torch.Tensor:
-            if attr.device != torch.device("cuda"):
-                attr = attr.to(torch.device("cuda"))
+            # if attr.device != torch.device("cuda"):
+            #     attr = attr.to(torch.device("cuda"))
+            if attr.device != default_device:
+                attr = attr.to(default_device)
         setattr(self, name, attr)
 
     def make_schedule(self, ddim_num_steps, ddim_discretize="uniform", ddim_eta=0., verbose=True):
